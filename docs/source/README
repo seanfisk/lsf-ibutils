@@ -1,0 +1,5 @@
+Run `sphinx-apidoc -o . ../../lsf_ibutils' in this directory.
+
+This will generate `modules.rst' and `lsf_ibutils.rst'.
+
+Then include `modules.rst' in your `index.rst' file.
