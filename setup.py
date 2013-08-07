@@ -58,12 +58,8 @@ setup_dict = dict(
     zip_safe=False,  # don't use eggs
     entry_points={
         'console_scripts': [
-            'lsf_ibutils_cli = lsf_ibutils.main:entry_point'
+            'ibsub = lsf_ibutils.ibsub.main:entry_point'
         ],
-        # if you have a gui, use this
-        # 'gui_scripts': [
-        #     'lsf_ibutils_gui = lsf_ibutils.gui:entry_point'
-        # ]
     }
 )
 

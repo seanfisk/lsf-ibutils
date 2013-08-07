@@ -7,7 +7,7 @@ import pytest
 parametrize = pytest.mark.parametrize
 
 from lsf_ibutils import metadata
-from lsf_ibutils.main import main
+from lsf_ibutils.ibsub.main import main
 
 
 class TestMain(object):
