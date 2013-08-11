@@ -6,6 +6,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   lsf_ibutils
 
 .. only:: html
 

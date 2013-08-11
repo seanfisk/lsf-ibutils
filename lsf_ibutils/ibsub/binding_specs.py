@@ -1,3 +1,7 @@
+""":mod:`lsf_ibutils.ibsub.binding_specs` -- pinject setup
+"""
+
+
 from lsf_ibutils.ibsub.prompts import exec_prompts
 from pinject import BindingSpec
 
