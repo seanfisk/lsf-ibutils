@@ -53,7 +53,7 @@ setup_dict = dict(
     ],
     packages=find_packages(),
     install_requires=[
-        # your module dependencies
+        'pinject>=0.10',
     ] + python_version_specific_requires,
     zip_safe=False,  # don't use eggs
     entry_points={

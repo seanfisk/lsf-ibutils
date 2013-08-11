@@ -3,11 +3,13 @@
 """
 
 from __future__ import print_function
-
 import argparse
 import sys
 
+import pinject
+
 from lsf_ibutils import metadata
+from lsf_ibutils.ibsub.binding_specs import IbsubBindingSpec
 
 
 def main(argv):
@@ -16,36 +18,47 @@ def main(argv):
     :param argv: command-line arguments
     :type argv: :class:`list`
     """
-    author_strings = []
-    for name, email in zip(metadata.authors, metadata.emails):
-        author_strings.append('Author: {0} <{1}>'.format(name, email))
+    obj_graph = pinject.new_object_graph(binding_specs=[IbsubBindingSpec()])
+    return obj_graph.provide(Main)(argv)
 
-    epilog = '''
+
+class Main(object):
+    def __init__(self, exec_prompts):
+        self._exec_prompts = exec_prompts
+
+    def __call__(self, argv):
+        exec_prompts = self._exec_prompts
+
+        author_strings = []
+        for name, email in zip(metadata.authors, metadata.emails):
+            author_strings.append('Author: {0} <{1}>'.format(name, email))
+
+        epilog = '''
 {project} {version}
 
 {authors}
 URL: <{url}>
 '''.format(
-        project=metadata.project,
-        version=metadata.version,
-        authors='\n'.join(author_strings),
-        url=metadata.url)
+            project=metadata.project,
+            version=metadata.version,
+            authors='\n'.join(author_strings),
+            url=metadata.url)
 
-    arg_parser = argparse.ArgumentParser(
-        prog=argv[0],
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        description=metadata.description,
-        epilog=epilog)
-    arg_parser.add_argument(
-        '-v', '--version',
-        action='version',
-        version='{0} {1}'.format(metadata.project, metadata.version))
+        arg_parser = argparse.ArgumentParser(
+            prog=argv[0],
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            description=metadata.description,
+            epilog=epilog)
+        arg_parser.add_argument(
+            '-v', '--version',
+            action='version',
+            version='{0} {1}'.format(metadata.project, metadata.version))
 
-    arg_parser.parse_args(args=argv[1:])
+        arg_parser.parse_args(args=argv[1:])
 
-    print(epilog)
+        exec_prompts()
 
-    return 0
+        return 0
 
 
 def entry_point():
