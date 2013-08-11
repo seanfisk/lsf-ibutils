@@ -1,3 +1,4 @@
 # Python 2.6 compatibility
 # argparse==1.2.1
 pinject==0.10
+psutil==1.0.1
