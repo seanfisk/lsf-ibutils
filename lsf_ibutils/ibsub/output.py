@@ -4,6 +4,7 @@
 # etc. However, it seems to be portable across Python 2 and 3. See here:
 # <http://docs.python.org/2/library/pipes.html#pipes.quote>
 from pipes import quote
+import shlex
 
 
 SYNTAXES = [
@@ -21,7 +22,8 @@ def build_command(flags, command):
 
     :param flags: a list of flags
     :type flags: :class:`list` of :class:`tuple`
-    :param command: command to run
+    :param command: command to run, in shell syntax \
+    e.g., ``"mpirun.lsf './my executable' --flag"``
     :type command: :class:`str`
     :return: the command string
     :rtype: :class:`str`
@@ -30,7 +32,9 @@ def build_command(flags, command):
     for flag_tuple in flags:
         for flag in flag_tuple:
             quoted_args.append(quote(flag))
-    quoted_args.append(quote(command))
+    # Command is assumed to already be in shell syntax, so it gets passed
+    # through unquoted.
+    quoted_args.append(command)
     return ' '.join(quoted_args)
 
 
@@ -39,13 +43,17 @@ class BuildScript(object):
         self._today_datetime = today_datetime
 
     def __call__(self, flags, command, syntax):
-        """Build a script string from a list of flags and given syntax.
+        """Build a script string from a list of flags and given syntax. The
+        command is assumed to already be in shell syntax, so it is passed
+        through unquoted. If using Python syntax, shell metacharacters will not
+        be recognized.
 
         :param flags: a list of flags
         :type flags: :class:`list` of :class:`tuple`
         :param syntax: shell syntax to use
         :type syntax: :class:`str`, one of :data:`SHELLS`
-        :param command: command to run
+        :param command: command to run, in shell syntax \
+        e.g., ``"mpirun.lsf './my executable' --flag"``
         :type command: :class:`str`
         :return: the script as a string
         :rtype: class:`str`
@@ -73,11 +81,14 @@ class BuildScript(object):
         lines.append('')
 
         if syntax == 'python':
+            command_list_string = repr(shlex.split(command))
             lines += [
                 'import subprocess',
-                "subprocess.call(['{0}'])".format(command),
+                "subprocess.call({0})".format(command_list_string),
             ]
         else:
-            lines.append(quote(command))
+            # Command is assumed to already be in shell syntax, so it gets
+            # passed through unquoted.
+            lines.append(command)
 
         return '\n'.join(lines) + '\n'
