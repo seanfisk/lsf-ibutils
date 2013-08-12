@@ -28,6 +28,11 @@ def detect():
     :return: the short name of the shell if possible to detect, else ``None``
     :rtype: :class:`str`
     """
+    # The pytest-cov plugin (`paver coverage') reports this function as not
+    # covered. Ignore it, because this function is covered by launching a
+    # subprocess and there is no way the coverage plugin would be able to
+    # detect that.
+
     # If any of this errors at any point just return None.
     current_proc = Process(os.getpid())
     if current_proc is None:
