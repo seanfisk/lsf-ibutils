@@ -6,6 +6,8 @@
 from pipes import quote
 import shlex
 
+import pinject
+
 
 SYNTAXES = [
     'bash',
@@ -39,8 +41,9 @@ def build_command(flags, command):
 
 
 class BuildScript(object):
+    @pinject.copy_args_to_internal_fields
     def __init__(self, today_datetime):
-        self._today_datetime = today_datetime
+        pass
 
     def __call__(self, flags, command, syntax):
         """Build a script string from a list of flags and given syntax. The

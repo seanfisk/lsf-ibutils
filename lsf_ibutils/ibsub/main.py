@@ -23,12 +23,11 @@ def main(argv):
 
 
 class Main(object):
+    @pinject.copy_args_to_internal_fields
     def __init__(self, exec_prompts):
-        self._exec_prompts = exec_prompts
+        pass
 
     def __call__(self, argv):
-        exec_prompts = self._exec_prompts
-
         author_strings = []
         for name, email in zip(metadata.authors, metadata.emails):
             author_strings.append('Author: {0} <{1}>'.format(name, email))
@@ -56,7 +55,7 @@ URL: <{url}>
 
         arg_parser.parse_args(args=argv[1:])
 
-        exec_prompts()
+        print(self._exec_prompts())
 
         return 0
 

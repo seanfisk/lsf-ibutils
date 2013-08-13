@@ -9,23 +9,23 @@ from tests.helpers import assert_exc_info_msg
 @fixture
 def flags_simple():
     return [
-        ('-J', 'awesomename'),
-        ('-P', 'awesomeproj'),
-        ('-n', '10'),
+        ['-J', 'awesomename'],
+        ['-P', 'awesomeproj'],
+        ['-n', '10'],
     ]
 
 
 @fixture
 def flags_ptile():
-    return [('-R', 'span[ptile=10]')]
+    return [['-R', 'span[ptile=10]']]
 
 
 @fixture
 def flags_spaces():
     return [
-        ('-J', 'job name'),
-        ('-P', 'proj name'),
-        ('-q', 'queue with spaces'),
+        ['-J', 'job name'],
+        ['-P', 'proj name'],
+        ['-q', 'queue with spaces'],
     ]
 
 
@@ -52,9 +52,9 @@ class TestBuildCommand(object):
             "bsub -J 'job'\"'\"' nam[e]' -P 'pr{oj n}ame \escape' "
             "-q '`tick` $(param sub)' run {abc,def}" ==
             build_command([
-                ('-J', "job' nam[e]"),
-                ('-P', 'pr{oj n}ame \\escape'),
-                ('-q', '`tick` $(param sub)'),
+                ['-J', "job' nam[e]"],
+                ['-P', 'pr{oj n}ame \\escape'],
+                ['-q', '`tick` $(param sub)'],
             ], 'run {abc,def}'))
 
 

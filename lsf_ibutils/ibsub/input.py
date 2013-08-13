@@ -6,11 +6,13 @@ import sys
 # Uses GNU readline on UNIX-like operating systems, pyreadline on Windows.
 import readline
 
+import pinject
+
 
 class SimplePrompt(object):
+    @pinject.copy_args_to_internal_fields
     def __init__(self, prompt_for_line, set_completions):
-        self._prompt_for_line = prompt_for_line
-        self._set_completions = set_completions
+        pass
 
     def __call__(self, message, required=False, format_=None, validator=None,
                  default=None, completions=[]):
