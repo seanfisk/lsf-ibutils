@@ -1,0 +1,8 @@
+WRF Scaling
+SCSG 001
+10
+45
+
+
+
+mpirun.lsf './wrf spaces.exe'
