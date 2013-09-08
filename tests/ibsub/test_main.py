@@ -5,10 +5,11 @@ from pytest import raises, fixture
 #
 import pytest
 parametrize = pytest.mark.parametrize
-from mock import MagicMock
+from mock import MagicMock, create_autospec
 
 from lsf_ibutils import metadata
 from lsf_ibutils.ibsub.main import Main
+from lsf_ibutils.ibsub.output import build_command
 
 
 @fixture
@@ -17,8 +18,25 @@ def mock_exec_prompts():
 
 
 @fixture
-def main(mock_exec_prompts):
-    return Main(mock_exec_prompts)
+def mock_build_script():
+    return MagicMock()
+
+
+@fixture
+def mock_build_command():
+    return create_autospec(build_command, spec_set=True)
+
+
+@fixture
+def mock_prompt_command():
+    return MagicMock()
+
+
+@fixture
+def main(mock_exec_prompts, mock_prompt_command,
+         mock_build_script, mock_build_command):
+    return Main(mock_exec_prompts, mock_prompt_command,
+                mock_build_script, mock_build_command)
 
 
 class TestMain(object):

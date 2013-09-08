@@ -7,6 +7,7 @@ from pinject import BindingSpec
 
 from lsf_ibutils.ibsub.prompts import Prompt
 from lsf_ibutils.ibsub.input import prompt_for_line, set_completions
+from lsf_ibutils.ibsub.output import build_command
 
 
 class IbsubBindingSpec(BindingSpec):
@@ -19,3 +20,4 @@ class IbsubBindingSpec(BindingSpec):
     def configure(self, bind):
         bind('prompt_for_line', to_instance=prompt_for_line)
         bind('set_completions', to_instance=set_completions)
+        bind('build_command', to_instance=build_command)

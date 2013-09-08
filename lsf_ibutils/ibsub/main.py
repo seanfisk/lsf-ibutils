@@ -11,6 +11,8 @@ import pinject
 from lsf_ibutils import ibsub
 from lsf_ibutils import metadata
 from lsf_ibutils.ibsub.binding_specs import IbsubBindingSpec
+from lsf_ibutils.ibsub import output
+from lsf_ibutils.ibsub import shell
 
 
 def main(argv):
@@ -27,7 +29,8 @@ def main(argv):
 
 class Main(object):
     @pinject.copy_args_to_internal_fields
-    def __init__(self, exec_prompts):
+    def __init__(self, exec_prompts, prompt_command,
+                 build_script, build_command):
         pass
 
     def __call__(self, argv):
@@ -55,10 +58,28 @@ URL: <{url}>
             '-v', '--version',
             action='version',
             version='{0} {1}'.format(metadata.project, metadata.version))
+        type_choices = ['script', 'command']
+        arg_parser.add_argument(
+            '-t', '--type',
+            choices=type_choices,
+            default=type_choices[0],
+            help='type of output')
+        arg_parser.add_argument(
+            '-s', '--syntax',
+            choices=output.SYNTAXES,
+            default=shell.detect(),
+            help='shell syntax to use in conjuction with --type script')
 
-        arg_parser.parse_args(args=argv[1:])
+        args = arg_parser.parse_args(args=argv[1:])
+        flags = self._exec_prompts()
+        command = self._prompt_command()
 
-        print(self._exec_prompts())
+        if args.type == 'script':
+            out = self._build_script(flags, command, args.syntax)
+        else:
+            out = self._build_command(flags, command)
+
+        print(out)
 
         return 0
 

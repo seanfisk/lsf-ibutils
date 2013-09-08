@@ -141,7 +141,7 @@ class QueueName(Prompt):
             default=default,
             completions=self._get_completions(),
         )
-        return ['-q', text]
+        return (text, ['-q', text])
 
 
 class OutputFileName(Prompt):
@@ -170,6 +170,16 @@ class ErrorFileName(Prompt):
         return (text, ['-e', text])
 
 
+class PromptCommand(object):
+    @pinject.copy_args_to_internal_fields
+    def __init__(self, simple_prompt):
+        pass
+
+    def __call__(self):
+        # XXX TODO Untested.
+        return self._simple_prompt('Command to run', required=True)
+
+
 class ExecPrompts(object):
     @pinject.copy_args_to_internal_fields
     def __init__(self, prompt_class_list, simple_prompt):
@@ -187,7 +197,8 @@ class ExecPrompts(object):
         for prompt_class in self._prompt_class_list:
             prompt = ibsub.obj_graph.provide(prompt_class)
             value, flags = prompt(values)
+            if value is None:
+                continue
             values[prompt_class] = value
             flags_list.append(flags)
-
         return flags_list
