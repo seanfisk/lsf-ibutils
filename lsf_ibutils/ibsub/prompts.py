@@ -8,6 +8,8 @@ import subprocess
 
 import pinject
 
+from lsf_ibutils import ibsub
+
 # The two options for specifying flags are declarative and imperative. After
 # trying the declarative approach initially, we made the decision that no
 # amount of custom options for the declarative approach would allow it to be as
@@ -183,9 +185,7 @@ class ExecPrompts(object):
         values = {}
         flags_list = []
         for prompt_class in self._prompt_class_list:
-            # XXX TODO Don't manually inject this dependency.
-            prompt = prompt_class(self._simple_prompt)
-
+            prompt = ibsub.obj_graph.provide(prompt_class)
             value, flags = prompt(values)
             values[prompt_class] = value
             flags_list.append(flags)

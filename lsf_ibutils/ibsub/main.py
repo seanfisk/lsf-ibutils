@@ -8,6 +8,7 @@ import sys
 
 import pinject
 
+from lsf_ibutils import ibsub
 from lsf_ibutils import metadata
 from lsf_ibutils.ibsub.binding_specs import IbsubBindingSpec
 
@@ -19,6 +20,8 @@ def main(argv):
     :type argv: :class:`list`
     """
     obj_graph = pinject.new_object_graph(binding_specs=[IbsubBindingSpec()])
+    # TODO Not the cleanest solution.
+    ibsub.obj_graph = obj_graph
     return obj_graph.provide(Main)(argv)
 
 
