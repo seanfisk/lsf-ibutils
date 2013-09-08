@@ -83,6 +83,10 @@ def prompt_for_line(prompt):
     # raw_input by default prints to stdout, but we want to print to stderr.
     sys.stdout = sys.stderr
     try:
+        # If input is being piped or redirected in, there is no need to print
+        # the prompts.
+        if not sys.stdin.isatty():
+            prompt = ''
         return raw_input(prompt)
     except EOFError:
         # Since the user didn't press Enter, a newline wouldn't be printed to
