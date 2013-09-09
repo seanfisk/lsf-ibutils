@@ -5,3 +5,5 @@ Improve README
 Improve docs
 Add Travis-CI
 Catch keyboard interrupts so they don't dump a stack trace
+Distribution with frozen exe (using pyinstaller)
+Fix shell detection for frozen executable
