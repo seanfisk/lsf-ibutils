@@ -85,59 +85,22 @@ class WallClockTime(Prompt):
 class QueueName(Prompt):
     """Prompt for the job queue name."""
     @pinject.copy_args_to_internal_fields
-    def __init__(self, simple_prompt):
-        self._completions_cache = None
+    def __init__(self, simple_prompt, get_queues):
+        pass
 
     def _validator(self, text):
         # XXX TODO Untested
-        return text in self._get_completions()
-
-    def _get_completions(self):
-        # XXX TODO Untested
-
-        # Retrieve memoized completions, if they exist.
-        if self._completions_cache is not None:
-            return self._completions_cache
-
-        bqueues_args = ['bqueues']
-        current_user = os.getenv('USER')
-        if current_user is not None:
-            # These arguments will get allowed queues for the current user.
-            bqueues_args += ['-u', current_user]
-        queues = []
-        try:
-            output = subprocess.check_output(bqueues_args)
-            # Strip off the first line, which is a header.
-            lines = output.splitlines()[1:]
-            for line in lines:
-                queue = line.split()[0]
-                queues.append(queue)
-        except subprocess.CalledProcessError:
-            pass
-        except OSError:
-            pass
-        # If the bqueues subprocess bombs out on an error, just ignore it.  The
-        # program can be useful even without completions. If we don't have
-        # bqueues our program should not crash.
-
-        # Memoize the completions. We also memoize an empty list of completions
-        # because if it didn't work a second ago, it's not likely to work now.
-        self._completions_cache = queues
-
-        return queues
+        return text in self._get_queues()
 
     def __call__(self, args_thus_far):
-        # XXX TODO Untested
-
-        # This is hard-coded to our particular machine, but it seems like a
-        # reasonable default everywhere.
-        default = 'regular'
         text = self._simple_prompt(
             'Queue',
             required=True,
             validator=self._validator,
-            default=default,
-            completions=self._get_completions(),
+            # This is hard-coded to our particular machine, but it seems like a
+            # reasonable default everywhere.
+            default='regular',
+            completions=self._get_queues(),
         )
         return (text, ['-q', text])
 
@@ -200,3 +163,42 @@ class ExecPrompts(object):
             values[prompt_class] = value
             flags_list.append(flags)
         return flags_list
+
+
+class GetQueues(object):
+    def __init__(self):
+        self._queue_cache = None
+
+    def __call__(self):
+        # XXX TODO Untested
+
+        # Retrieve memoized queue list, if they exist.
+        if self._cache is not None:
+            return self._queue_cache
+
+        bqueues_args = ['bqueues']
+        current_user = os.getenv('USER')
+        if current_user is not None:
+            # These arguments will get allowed queues for the current user.
+            bqueues_args += ['-u', current_user]
+        queues = []
+        try:
+            output = subprocess.check_output(bqueues_args)
+            # Strip off the first line, which is a header.
+            lines = output.splitlines()[1:]
+            for line in lines:
+                queue = line.split()[0]
+                queues.append(queue)
+        except subprocess.CalledProcessError:
+            pass
+        except OSError:
+            pass
+        # If the bqueues subprocess bombs out on an error, just ignore it.  The
+        # program can be useful even without completions. If we don't have
+        # bqueues our program should not crash.
+
+        # Memoize the completions. We also memoize an empty list of completions
+        # because if it didn't work a second ago, it's not likely to work now.
+        self._queue_cache = queues
+
+        return queues

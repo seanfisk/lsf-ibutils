@@ -8,6 +8,7 @@ from lsf_ibutils.ibsub.prompts import (
     ProjectCode,
     TasksPerNode,
     WallClockTime,
+    QueueName,
 )
 # For {Output,Error}FileName
 from lsf_ibutils.ibsub import prompts
@@ -109,6 +110,32 @@ class TestWallClockTime(object):
     ])
     def test_validator(self, wall_clock_time, text, valid):
         assert wall_clock_time._validator(text) == valid
+
+
+class TestQueueName(object):
+    @fixture
+    def mock_get_queues(self):
+        return MagicMock()
+
+    @fixture
+    def queue_name(self, mock_simple_prompt, mock_get_queues):
+        return QueueName(mock_simple_prompt, mock_get_queues)
+
+    def test_return_value(self, queue_name, mock_simple_prompt):
+        mock_simple_prompt.return_value = sentinel.queue
+        assert (sentinel.queue, ['-q', sentinel.queue]) == queue_name({})
+
+    def test_calls_simple_prompt_correctly(
+            self, queue_name, mock_simple_prompt, mock_get_queues):
+        mock_get_queues.return_value = sentinel.completions
+        queue_name({})
+        mock_simple_prompt.assert_called_once_with(
+            'Queue',
+            required=True,
+            validator=queue_name._validator,
+            default='regular',
+            completions=sentinel.completions)
+        mock_get_queues.assert_called_once_with()
 
 
 class TestOutputErrorFileName(object):
