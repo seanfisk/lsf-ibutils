@@ -64,10 +64,14 @@ URL: <{url}>
             choices=type_choices,
             default=type_choices[0],
             help='type of output')
+        # XXX TODO Test this code
+        default_syntax = shell.detect()
+        if default_syntax is None:
+            default_syntax = 'bash'
         arg_parser.add_argument(
             '-s', '--syntax',
             choices=output.SYNTAXES,
-            default=shell.detect(),
+            default=default_syntax,
             help='shell syntax to use in conjuction with --type script')
 
         args = arg_parser.parse_args(args=argv[1:])
