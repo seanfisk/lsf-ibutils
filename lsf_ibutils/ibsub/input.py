@@ -94,6 +94,8 @@ def prompt_for_line(prompt):
         print(file=sys.stderr)
         # Simplify catching this to just returning an empty string.
         return ''
+    except KeyboardInterrupt:
+        pass
     finally:
         sys.stdout = sys.__stdout__
 

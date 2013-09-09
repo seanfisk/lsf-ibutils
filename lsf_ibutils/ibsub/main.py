@@ -5,6 +5,7 @@
 from __future__ import print_function
 import argparse
 import sys
+import signal
 
 import pinject
 
@@ -15,15 +16,30 @@ from lsf_ibutils.ibsub import output
 from lsf_ibutils.ibsub import shell
 
 
+def _install_sigint_handler():
+    """Install a signal handler to override the KeyboardInterrupt exception for
+    a clean exit.
+    """
+    def sigint_handler(sig, frame):
+        raise SystemExit(1)
+    signal.signal(signal.SIGINT, sigint_handler)
+
+
 def main(argv):
     """Program entry point.
 
     :param argv: command-line arguments
     :type argv: :class:`list`
     """
+    # Setup pinject.
     obj_graph = pinject.new_object_graph(binding_specs=[IbsubBindingSpec()])
     # TODO Not the cleanest solution.
     ibsub.obj_graph = obj_graph
+
+    # Setup signal handlers.
+    _install_sigint_handler()
+
+    # Run pinject-provided main.
     return obj_graph.provide(Main)(argv)
 
 
