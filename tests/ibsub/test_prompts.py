@@ -1,7 +1,7 @@
 from mock import MagicMock, sentinel
 from pytest import fixture
 import pytest
-parametrize = pytest.mark.paraemtrize
+parametrize = pytest.mark.parametrize
 
 from lsf_ibutils.ibsub.prompts import (
     JobName,
@@ -64,6 +64,16 @@ class TestTasksPerNode(object):
             format_='positive number',
             validator=tasks_per_node._validator)
 
+    @parametrize(('text', 'valid'), [
+        ('notanint', False),
+        ('20.4', False),
+        ('-20', False),
+        ('0', False),
+        ('30', True),
+    ])
+    def test_validator(self, tasks_per_node, text, valid):
+        assert tasks_per_node._validator(text) == valid
+
 
 class TestWallClockTime(object):
     @fixture
@@ -82,6 +92,23 @@ class TestWallClockTime(object):
             format_='00:00 for hours or 00 for minutes',
             required=True,
             validator=wall_clock_time._validator)
+
+    @parametrize(('text', 'valid'), [
+        # These could be farther refined, but I'm not really sure exactly what
+        # bsub accepts yet.
+        ('11:00', True),
+        ('01:54', True),
+        ('4:11', True),
+        ('45', True),
+        ('90', True),
+        ('5', True),
+        (':34', False),
+        ('12:22bcdef', False),
+        ('notatime', False),
+        ('a4', False),
+    ])
+    def test_validator(self, wall_clock_time, text, valid):
+        assert wall_clock_time._validator(text) == valid
 
 
 class TestOutputErrorFileName(object):

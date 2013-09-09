@@ -54,7 +54,6 @@ class ProjectCode(Prompt):
 class TasksPerNode(Prompt):
     """Prompt for the number of MPI tasks to run on each node."""
     def _validator(self, text):
-        # XXX TODO Untested
         try:
             n = int(text)
         except ValueError:
@@ -72,7 +71,6 @@ class TasksPerNode(Prompt):
 class WallClockTime(Prompt):
     """Prompt for the wall clock time limit of the task, in seconds."""
     def _validator(self, text):
-        # XXX TODO Untested
         return bool(WALL_CLOCK_RE.match(text))
 
     def __call__(self, values):
