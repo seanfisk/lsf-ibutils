@@ -1,0 +1,7 @@
+Make pinject python 26 and 33 compatible
+Don't just use a MagicMock for injected classes
+Test all prompt validators
+Print a blank line to stderr after prompts are printed
+Improve README
+Improve docs
+Add Travis-CI
