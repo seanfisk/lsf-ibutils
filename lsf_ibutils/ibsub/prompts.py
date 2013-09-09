@@ -173,7 +173,7 @@ class GetQueues(object):
         # XXX TODO Untested
 
         # Retrieve memoized queue list, if they exist.
-        if self._cache is not None:
+        if self._queue_cache is not None:
             return self._queue_cache
 
         bqueues_args = ['bqueues']
