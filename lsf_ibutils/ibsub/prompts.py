@@ -89,7 +89,6 @@ class QueueName(Prompt):
         pass
 
     def _validator(self, text):
-        # XXX TODO Untested
         return text in self._get_queues()
 
     def __call__(self, args_thus_far):
@@ -137,7 +136,6 @@ class PromptCommand(object):
         pass
 
     def __call__(self):
-        # XXX TODO Untested.
         return self._simple_prompt('Command to run', required=True)
 
 

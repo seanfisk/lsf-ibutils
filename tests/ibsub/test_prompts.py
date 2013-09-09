@@ -9,6 +9,7 @@ from lsf_ibutils.ibsub.prompts import (
     TasksPerNode,
     WallClockTime,
     QueueName,
+    PromptCommand,
 )
 # For {Output,Error}FileName
 from lsf_ibutils.ibsub import prompts
@@ -137,6 +138,18 @@ class TestQueueName(object):
             completions=sentinel.completions)
         mock_get_queues.assert_called_once_with()
 
+    @parametrize(('text', 'valid'), [
+        (0, True),
+        (9, True),
+        (10, False),
+        (-1345, False),
+        (1e6, False),
+        ('notvalid', False),
+    ])
+    def test_validator(self, queue_name, text, valid, mock_get_queues):
+        mock_get_queues.return_value = range(10)
+        assert queue_name._validator(text) == valid
+
 
 class TestOutputErrorFileName(object):
     @fixture(params=['Output', 'Error'])
@@ -165,3 +178,20 @@ class TestOutputErrorFileName(object):
         mock_simple_prompt.assert_called_once_with(
             outerr + ' file name',
             default='my name.%J.' + outerr[:3].lower())
+
+
+class TestPromptCommand(object):
+    @fixture
+    def prompt_command(self, mock_simple_prompt):
+        return PromptCommand(mock_simple_prompt)
+
+    def test_return_value(self, prompt_command, mock_simple_prompt):
+        mock_simple_prompt.return_value = sentinel.command
+        assert prompt_command() == sentinel.command
+
+    def test_calls_simple_prompt_correctly(
+            self, prompt_command, mock_simple_prompt):
+        prompt_command()
+        mock_simple_prompt.assert_called_once_with(
+            'Command to run',
+            required=True)
