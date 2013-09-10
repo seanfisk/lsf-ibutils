@@ -5,3 +5,4 @@ Improve README
 Improve docs
 Add Travis-CI
 Fix shell detection for frozen executable
+Handle the -N flag which sends an email once the job is finished.
