@@ -1,7 +1,7 @@
 import os
 import sys
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 sys.path.append('.')
 from lsf_ibutils import metadata
@@ -51,7 +51,7 @@ setup_dict = dict(
         'Topic :: System :: Distributed Computing',
         'Topic :: Utilities',
     ],
-    packages=find_packages(),
+    packages=['lsf_ibutils', 'lsf_ibutils.ibsub'],
     install_requires=[
         'pinject>=0.10',
         'psutil>=1.0.1',
