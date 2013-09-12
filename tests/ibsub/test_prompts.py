@@ -52,7 +52,7 @@ class TestProjectCode(object):
 class TestTasksPerNode(object):
     @fixture
     def tasks_per_node(self, mock_simple_prompt):
-        return TasksPerNode(mock_simple_prompt)
+        return TasksPerNode(mock_simple_prompt, sentinel.validator)
 
     def test_return_value(self, tasks_per_node, mock_simple_prompt):
         mock_simple_prompt.return_value = '230'
@@ -64,23 +64,13 @@ class TestTasksPerNode(object):
         mock_simple_prompt.assert_called_once_with(
             'Tasks per node',
             format_='positive number',
-            validator=tasks_per_node._validator)
-
-    @parametrize(('text', 'valid'), [
-        ('notanint', False),
-        ('20.4', False),
-        ('-20', False),
-        ('0', False),
-        ('30', True),
-    ])
-    def test_validator(self, tasks_per_node, text, valid):
-        assert tasks_per_node._validator(text) == valid
+            validator=sentinel.validator)
 
 
 class TestWallClockTime(object):
     @fixture
     def wall_clock_time(self, mock_simple_prompt):
-        return WallClockTime(mock_simple_prompt)
+        return WallClockTime(mock_simple_prompt, sentinel.validator)
 
     def test_return_value(self, wall_clock_time, mock_simple_prompt):
         mock_simple_prompt.return_value = sentinel.time
@@ -93,24 +83,7 @@ class TestWallClockTime(object):
             'Wall clock time limit',
             format_='00:00 for hours or 00 for minutes',
             required=True,
-            validator=wall_clock_time._validator)
-
-    @parametrize(('text', 'valid'), [
-        # These could be farther refined, but I'm not really sure exactly what
-        # bsub accepts yet.
-        ('11:00', True),
-        ('01:54', True),
-        ('4:11', True),
-        ('45', True),
-        ('90', True),
-        ('5', True),
-        (':34', False),
-        ('12:22bcdef', False),
-        ('notatime', False),
-        ('a4', False),
-    ])
-    def test_validator(self, wall_clock_time, text, valid):
-        assert wall_clock_time._validator(text) == valid
+            validator=sentinel.validator)
 
 
 class TestQueueName(object):

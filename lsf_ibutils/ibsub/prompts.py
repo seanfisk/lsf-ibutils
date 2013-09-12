@@ -2,7 +2,6 @@
 """
 
 from __future__ import print_function
-import re
 import os
 import subprocess
 
@@ -16,8 +15,6 @@ from lsf_ibutils import ibsub
 # customized as some of the arguments needed. Instead, we opted for the
 # imperative approach, with each function built up from smaller, private
 # library functions.
-
-WALL_CLOCK_RE = re.compile(r'(?:\d\d?:)?\d\d?$')
 
 
 class Prompt(object):
@@ -53,12 +50,9 @@ class ProjectCode(Prompt):
 
 class TasksPerNode(Prompt):
     """Prompt for the number of MPI tasks to run on each node."""
-    def _validator(self, text):
-        try:
-            n = int(text)
-        except ValueError:
-            return False
-        return n > 0
+    def __init__(self, simple_prompt, validate_positive_integer):
+        self._simple_prompt = simple_prompt
+        self._validator = validate_positive_integer
 
     def __call__(self, values):
         text = self._simple_prompt(
@@ -70,8 +64,9 @@ class TasksPerNode(Prompt):
 
 class WallClockTime(Prompt):
     """Prompt for the wall clock time limit of the task, in seconds."""
-    def _validator(self, text):
-        return bool(WALL_CLOCK_RE.match(text))
+    def __init__(self, simple_prompt, validate_time_duration):
+        self._simple_prompt = simple_prompt
+        self._validator = validate_time_duration
 
     def __call__(self, values):
         text = self._simple_prompt(
@@ -89,6 +84,7 @@ class QueueName(Prompt):
         pass
 
     def _validator(self, text):
+        # TODO Remove this validator from inside this class
         return text in self._get_queues()
 
     def __call__(self, args_thus_far):
