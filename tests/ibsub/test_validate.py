@@ -1,7 +1,7 @@
 import pytest
 parametrize = pytest.mark.parametrize
 
-from lsf_ibutils.ibsub.validate import positive_integer, time_duration
+from lsf_ibutils.ibsub import validate
 
 
 @parametrize(('text', 'valid'), [
@@ -12,7 +12,7 @@ from lsf_ibutils.ibsub.validate import positive_integer, time_duration
     ('30', True),
 ])
 def test_positive_integer(text, valid):
-    assert positive_integer(text) == valid
+    assert validate.positive_integer(text) == valid
 
 
 @parametrize(('text', 'valid'), [
@@ -30,4 +30,20 @@ def test_positive_integer(text, valid):
     ('a4', False),
 ])
 def test_time_duration(text, valid):
-    assert time_duration(text) == valid
+    assert validate.time_duration(text) == valid
+
+
+@parametrize(('text', 'valid'), [
+    ('y', True),
+    ('n', True),
+    ('Y', False),
+    ('N', False),
+    ('yes', False),
+    ('no', False),
+    ('Yes', False),
+    ('No', False),
+    ('yup', False),
+    ('wrong', False),
+])
+def test_yes_no(text, valid):
+    assert validate.yes_no(text) == valid

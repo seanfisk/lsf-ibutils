@@ -9,6 +9,8 @@ from lsf_ibutils.ibsub.prompts import (
     TasksPerNode,
     WallClockTime,
     QueueName,
+    EmailOnFinish,
+    EmailOnBegin,
     PromptCommand,
 )
 # For {Output,Error}FileName
@@ -151,6 +153,52 @@ class TestOutputErrorFileName(object):
         mock_simple_prompt.assert_called_once_with(
             outerr + ' file name',
             default='my name.%J.' + outerr[:3].lower())
+
+
+class TestEmailOnBegin(object):
+    @fixture
+    def email_on_begin(self, mock_simple_prompt):
+        return EmailOnBegin(mock_simple_prompt, sentinel.validator)
+
+    def test_return_value_no(self, email_on_begin, mock_simple_prompt):
+        mock_simple_prompt.return_value = 'n'
+        assert (None, []) == email_on_begin({})
+
+    def test_return_value_yes(self, email_on_begin, mock_simple_prompt):
+        mock_simple_prompt.return_value = 'y'
+        assert ('y', ['-B']) == email_on_begin({})
+
+    def test_calls_simple_prompt_correctly(
+            self, email_on_begin, mock_simple_prompt):
+        email_on_begin({})
+        mock_simple_prompt.assert_called_once_with(
+            'Notify by email when job begins?',
+            format_='y/n',
+            default='n',
+            validator=sentinel.validator)
+
+
+class TestEmailOnFinish(object):
+    @fixture
+    def email_on_finish(self, mock_simple_prompt):
+        return EmailOnFinish(mock_simple_prompt, sentinel.validator)
+
+    def test_return_value_no(self, email_on_finish, mock_simple_prompt):
+        mock_simple_prompt.return_value = 'n'
+        assert (None, []) == email_on_finish({})
+
+    def test_return_value_yes(self, email_on_finish, mock_simple_prompt):
+        mock_simple_prompt.return_value = 'y'
+        assert ('y', ['-N']) == email_on_finish({})
+
+    def test_calls_simple_prompt_correctly(
+            self, email_on_finish, mock_simple_prompt):
+        email_on_finish({})
+        mock_simple_prompt.assert_called_once_with(
+            'Notify by email when job finishes?',
+            format_='y/n',
+            default='n',
+            validator=sentinel.validator)
 
 
 class TestPromptCommand(object):

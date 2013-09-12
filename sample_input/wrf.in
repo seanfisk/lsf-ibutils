@@ -5,4 +5,6 @@ SCSG 001
 
 
 
+y
+y
 mpirun.lsf './wrf spaces.exe'

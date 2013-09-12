@@ -30,3 +30,14 @@ def time_duration(text):
     :rtype: :class:`bool`
     """
     return bool(TIME_DURATION_RE.match(text))
+
+
+def yes_no(text):
+    """Validate a yes or no question. This function only accepts "y" or "n".
+
+    :param text: text to validate
+    :type text: :class:`str`
+    :return: whether the text was valid
+    :rtype: :class:`bool`
+    """
+    return text == 'y' or text == 'n'

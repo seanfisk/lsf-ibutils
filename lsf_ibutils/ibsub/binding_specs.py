@@ -24,5 +24,5 @@ class IbsubBindingSpec(BindingSpec):
         bind('build_command', to_instance=build_command)
         bind('validate_positive_integer',
              to_instance=validate.positive_integer)
-        bind('validate_time_duration',
-             to_instance=validate.time_duration)
+        bind('validate_time_duration', to_instance=validate.time_duration)
+        bind('validate_yes_no', to_instance=validate.yes_no)
