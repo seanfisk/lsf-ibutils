@@ -1,0 +1,10 @@
+language: python
+python: 2.7
+env:
+  # TODO: Add other Python versions when pinject is compatible.
+  - TOXENV=py27
+  - TOXENV=docs
+install:
+  - pip install tox
+script:
+  - tox
