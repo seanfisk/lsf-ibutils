@@ -3,5 +3,4 @@ Don't just use a MagicMock for injected classes
 Print a blank line to stderr after prompts are printed
 Improve README
 Improve docs
-Add Travis-CI
 Fix shell detection for frozen executable
