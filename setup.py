@@ -55,6 +55,7 @@ setup_dict = dict(
     install_requires=[
         'pinject>=0.10',
         'psutil>=1.0.1',
+        'argcomplete>=0.6.3',
     ] + python_version_specific_requires,
     zip_safe=False,  # don't use eggs
     entry_points={

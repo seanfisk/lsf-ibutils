@@ -4,3 +4,4 @@ Print a blank line to stderr after prompts are printed
 Improve README
 Improve docs
 Fix shell detection for frozen executable
+argcomplete support for zsh

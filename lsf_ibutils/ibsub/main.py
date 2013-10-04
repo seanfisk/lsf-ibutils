@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# Install global completion cookie.
+# See <https://github.com/kislyuk/argcomplete#global-completion>
+# PYTHON_ARGCOMPLETE_OK
 """:mod:`lsf_ibutils.main` -- Program entry point
 """
 
@@ -8,6 +11,7 @@ import sys
 import signal
 
 import pinject
+import argcomplete
 
 from lsf_ibutils import ibsub
 from lsf_ibutils import metadata
@@ -90,6 +94,7 @@ URL: <{url}>
             default=default_syntax,
             help='shell syntax to use in conjuction with --type script')
 
+        argcomplete.autocomplete(arg_parser)
         args = arg_parser.parse_args(args=argv[1:])
         flags = self._exec_prompts()
         command = self._prompt_command()
