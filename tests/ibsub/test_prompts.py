@@ -6,6 +6,7 @@ parametrize = pytest.mark.parametrize
 from lsf_ibutils.ibsub.prompts import (
     JobName,
     ProjectCode,
+    TasksPerJob,
     TasksPerNode,
     WallClockTime,
     QueueName,
@@ -49,6 +50,25 @@ class TestProjectCode(object):
             self, project_code, mock_simple_prompt):
         project_code({})
         mock_simple_prompt.assert_called_once_with('Project code')
+
+
+class TestTasksPerJob(object):
+    @fixture
+    def tasks_per_job(self, mock_simple_prompt):
+        return TasksPerJob(mock_simple_prompt, sentinel.validator)
+
+    def test_return_value(self, tasks_per_job, mock_simple_prompt):
+        mock_simple_prompt.return_value = '43'
+        assert ('43', ['-n', '43']) == tasks_per_job({})
+
+    def test_calls_simple_prompt_correctly(
+            self, tasks_per_job, mock_simple_prompt):
+        tasks_per_job({})
+        mock_simple_prompt.assert_called_once_with(
+            'Tasks per job',
+            format_='positive number',
+            required=True,
+            validator=sentinel.validator)
 
 
 class TestTasksPerNode(object):

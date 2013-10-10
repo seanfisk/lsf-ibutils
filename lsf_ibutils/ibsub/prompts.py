@@ -48,6 +48,21 @@ class ProjectCode(Prompt):
         return (text, ['-P', text])
 
 
+class TasksPerJob(Prompt):
+    """Prompt for the number total tasks in this job."""
+    def __init__(self, simple_prompt, validate_positive_integer):
+        self._simple_prompt = simple_prompt
+        self._validator = validate_positive_integer
+
+    def __call__(self, values):
+        text = self._simple_prompt(
+            'Tasks per job',
+            format_='positive number',
+            required=True,
+            validator=self._validator)
+        return (text, ['-n', text])
+
+
 class TasksPerNode(Prompt):
     """Prompt for the number of MPI tasks to run on each node."""
     def __init__(self, simple_prompt, validate_positive_integer):
