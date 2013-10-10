@@ -33,22 +33,26 @@ def detect():
     # subprocess and there is no way the coverage plugin would be able to
     # detect that.
 
-    # If any of this errors at any point just return None.
-    current_proc = Process(os.getpid())
-    if current_proc is None:
+    # Keep going up the hierarchy to try to detect a shell. When running from
+    # source code, this should be the next process up. Frozen PyInstaller
+    # bundles will insert one extra process in there. This also supports
+    # auto-detection of the shell from scripts. If any of this errors at any
+    # point just return None.
+    proc = Process(os.getpid())
+    if proc is None:
         return None
 
-    parent_proc = current_proc.parent
-    if parent_proc is None:
-        return None
+    while True:
+        proc = proc.parent
+        if proc is None:
+            break
 
-    shell_path = parent_proc.exe
-    for shell in SHELLS:
-        shell_basename = os.path.basename(shell_path)
-        # Some shells can be called by name and version e.g. `bash-4.1'. This
-        # code handles that kind of call.
-        if shell in shell_basename:
-            return shell
+        proc_basename = os.path.basename(proc.exe)
+        for shell in SHELLS:
+            # Some shells can be called by name and version
+            # e.g. `bash-4.1'. This code handles that kind of call.
+            if shell in proc_basename:
+                return shell
 
     return None
 
