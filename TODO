@@ -1,4 +1,5 @@
 Write a completion (or optional) error class that is raised by any error during completion and just eaten later
+Add comments to shell output explaining the parameters using texttable
 Add format for wall clock time and number of processors based on the queue chosen
 Make pinject python 26 and 33 compatible
 Don't just use a MagicMock for injected classes
