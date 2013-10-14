@@ -1,3 +1,6 @@
+Add support for interactive jobs
+Write a completion (or optional) error class that is raised by any error during completion and just eaten later
+Add format for wall clock time and number of processors based on the queue chosen
 Make pinject python 26 and 33 compatible
 Don't just use a MagicMock for injected classes
 Print a blank line to stderr after prompts are printed
