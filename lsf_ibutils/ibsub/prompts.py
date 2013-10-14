@@ -147,6 +147,27 @@ class ErrorFileName(Prompt):
         return (text, ['-e', text])
 
 
+class InteractiveShell(Prompt):
+    """Prompt whether to submit an interactive shell job."""
+    def __init__(self, simple_prompt, validate_yes_no):
+        self._simple_prompt = simple_prompt
+        self._validator = validate_yes_no
+
+    def __call__(self, values):
+        text = self._simple_prompt(
+            'Run interactive shell?',
+            format_='y/n',
+            default='n',
+            validator=self._validator)
+        if text == 'n':
+            value = None
+            flags = []
+        else:
+            value = text
+            flags = ['-Is']
+        return (value, flags)
+
+
 class EmailOnBegin(Prompt):
     """Prompt whether to send an email to the user when the job begins."""
     def __init__(self, simple_prompt, validate_yes_no):

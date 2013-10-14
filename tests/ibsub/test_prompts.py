@@ -10,6 +10,7 @@ from lsf_ibutils.ibsub.prompts import (
     TasksPerNode,
     WallClockTime,
     QueueName,
+    InteractiveShell,
     EmailOnFinish,
     EmailOnBegin,
     PromptCommand,
@@ -182,6 +183,29 @@ class TestOutputErrorFileName(object):
         mock_simple_prompt.assert_called_once_with(
             outerr + ' file name',
             default='my name.%J.' + outerr[:3].lower())
+
+
+class TestInteractiveShell(object):
+    @fixture
+    def interactive_shell(self, mock_simple_prompt):
+        return InteractiveShell(mock_simple_prompt, sentinel.validator)
+
+    def test_return_value_no(self, interactive_shell, mock_simple_prompt):
+        mock_simple_prompt.return_value = 'n'
+        assert (None, []) == interactive_shell({})
+
+    def test_return_value_yes(self, interactive_shell, mock_simple_prompt):
+        mock_simple_prompt.return_value = 'y'
+        assert ('y', ['-Is']) == interactive_shell({})
+
+    def test_calls_simple_prompt_correctly(
+            self, interactive_shell, mock_simple_prompt):
+        interactive_shell({})
+        mock_simple_prompt.assert_called_once_with(
+            'Run interactive shell?',
+            format_='y/n',
+            default='n',
+            validator=sentinel.validator)
 
 
 class TestEmailOnBegin(object):
