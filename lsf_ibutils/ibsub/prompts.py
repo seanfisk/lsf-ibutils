@@ -43,8 +43,14 @@ class JobName(Prompt):
 
 class ProjectCode(Prompt):
     """Prompt for the project code, usually the same as the user's group."""
+    @pinject.copy_args_to_internal_fields
+    def __init__(self, simple_prompt, get_group_completions):
+        pass
+
     def __call__(self, values):
-        text = self._simple_prompt('Project code')
+        text = self._simple_prompt(
+            'Project code',
+            completions=self._get_group_completions())
         return (text, ['-P', text])
 
 

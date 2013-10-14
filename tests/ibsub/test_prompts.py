@@ -39,17 +39,25 @@ class TestJobName(object):
 
 class TestProjectCode(object):
     @fixture
-    def project_code(self, mock_simple_prompt):
-        return ProjectCode(mock_simple_prompt)
+    def mock_get_groups_completions(self):
+        return MagicMock()
+
+    @fixture
+    def project_code(self, mock_simple_prompt, mock_get_groups_completions):
+        return ProjectCode(mock_simple_prompt, mock_get_groups_completions)
 
     def test_return_value(self, project_code, mock_simple_prompt):
         mock_simple_prompt.return_value = sentinel.code
         assert (sentinel.code, ['-P', sentinel.code]) == project_code({})
 
     def test_calls_simple_prompt_correctly(
-            self, project_code, mock_simple_prompt):
+            self, project_code, mock_simple_prompt,
+            mock_get_groups_completions):
+        mock_get_groups_completions.return_value = sentinel.completions
         project_code({})
-        mock_simple_prompt.assert_called_once_with('Project code')
+        mock_simple_prompt.assert_called_once_with(
+            'Project code',
+            completions=sentinel.completions)
 
 
 class TestTasksPerJob(object):
@@ -110,20 +118,20 @@ class TestWallClockTime(object):
 
 class TestQueueName(object):
     @fixture
-    def mock_get_queues(self):
+    def mock_get_queue_completions(self):
         return MagicMock()
 
     @fixture
-    def queue_name(self, mock_simple_prompt, mock_get_queues):
-        return QueueName(mock_simple_prompt, mock_get_queues)
+    def queue_name(self, mock_simple_prompt, mock_get_queue_completions):
+        return QueueName(mock_simple_prompt, mock_get_queue_completions)
 
     def test_return_value(self, queue_name, mock_simple_prompt):
         mock_simple_prompt.return_value = sentinel.queue
         assert (sentinel.queue, ['-q', sentinel.queue]) == queue_name({})
 
     def test_calls_simple_prompt_correctly(
-            self, queue_name, mock_simple_prompt, mock_get_queues):
-        mock_get_queues.return_value = sentinel.completions
+            self, queue_name, mock_simple_prompt, mock_get_queue_completions):
+        mock_get_queue_completions.return_value = sentinel.completions
         queue_name({})
         mock_simple_prompt.assert_called_once_with(
             'Queue',
@@ -131,7 +139,7 @@ class TestQueueName(object):
             validator=queue_name._validator,
             default='regular',
             completions=sentinel.completions)
-        mock_get_queues.assert_called_once_with()
+        mock_get_queue_completions.assert_called_once_with()
 
     @parametrize(('text', 'valid'), [
         (0, True),
@@ -141,8 +149,9 @@ class TestQueueName(object):
         (1e6, False),
         ('notvalid', False),
     ])
-    def test_validator(self, queue_name, text, valid, mock_get_queues):
-        mock_get_queues.return_value = range(10)
+    def test_validator(
+            self, queue_name, text, valid, mock_get_queue_completions):
+        mock_get_queue_completions.return_value = range(10)
         assert queue_name._validator(text) == valid
 
 
