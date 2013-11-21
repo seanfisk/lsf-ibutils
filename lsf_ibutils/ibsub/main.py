@@ -99,6 +99,11 @@ URL: <{url}>
         else:
             out = self._build_command(flags, command)
 
+        # If stdout is not being redirected, print a blank line so output
+        # looks nicer.
+        if sys.stdout.isatty():
+            print()
+
         print(out)
 
         return 0
