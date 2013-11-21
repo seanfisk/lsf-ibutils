@@ -1,10 +1,12 @@
 WRF Scaling
-SCSG 001
+SCSG0001
 10
 45
+12:00
 
 
 
+n
 y
 y
 mpirun.lsf './wrf spaces.exe'
