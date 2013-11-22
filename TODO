@@ -3,7 +3,6 @@ Add comments to shell output explaining the parameters using texttable
 Add format for wall clock time and number of processors based on the queue chosen
 Make pinject python 26 and 33 compatible
 Don't just use a MagicMock for injected classes
-Print a blank line to stderr after prompts are printed
 Improve README
 Improve docs
 Test shell hierarchy call
